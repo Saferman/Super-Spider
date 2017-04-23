@@ -23,10 +23,9 @@ class Browser(QWebView):
 def parse(dom, url):
     DomHandle = DomAnalysis(dom, url)
     DomHandle.GetURL()
-    
 
 
 if __name__ == '__main__':
-    url = "http://www.baidu.com"
+    url = "http://demo.aisec.cn/demo/aisec/"
     Browser(url)
     #print "[+]Over"

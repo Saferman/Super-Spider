@@ -1,4 +1,5 @@
 #encoding=utf-8
+import re
 
 class FilterURL(object):
 
@@ -6,6 +7,8 @@ class FilterURL(object):
         pass
 
     def judge(self, link):
+        if link == None:
+            return False
         if link == '/':
             return False
         if link.find('javascript:')==0:
@@ -14,9 +17,14 @@ class FilterURL(object):
         
     def filter(self, link):
         if link.find('http')!=0:
-            return self.url + "/" + link.lstrip('/')
+            return self.url.rstrip('/') + "/" + link.lstrip('/')
         else:
             return link
+
+    def onclick_filter(self, link):
+        link_pattern = re.compile("[\"'][ ]*\+[ ]*[\"']")
+        return re.sub(link_pattern, '', link)
+
 
     def test(self):
         print self.url
