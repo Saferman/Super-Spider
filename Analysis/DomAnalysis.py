@@ -26,6 +26,7 @@ class DomAnalysis(FilterURL):
         print self.soup.prettify().encode('utf-8','ignore')
 
     def GetURL(self):
+        #print self.ShowHTML()
         URL = []
         # 得到页面编码情况
         if not self.soup.meta.get('content'):
@@ -49,23 +50,27 @@ class DomAnalysis(FilterURL):
                 action_url = ''
             else:
                 action_url = tag.get('action')
-            action_url = self.filter(action_url)
-            param = []
-            for tag2 in tag.find_all('input'):
-                if tag2.get('name') == None:
+            if self.judge(action_url):
+                action_url = self.filter(action_url)
+                param = []
+                for tag2 in tag.find_all('input'):
+                    if tag2.get('name') == None:
                         continue
-                value = tag2.get('value').encode(charset,'ignore') 
-                if not value:
-                    value = 'admin' #以后再增加表单提交功能
-                param.append(tag2.get('name')+'='+urllib.quote(value)) 
-            URL.append(action_url + "?" + '&'.join(param))
+                    value = tag2.get('value').encode(charset,'ignore') 
+                    if not value:
+                        value = 'admin' 
+                    param.append(tag2.get('name')+'='+urllib.quote(value))
+                URL.append(action_url + "?" + '&'.join(param))
         
         #  自动交互. 这里采用静态析的思路提取交互式生成的链接
         for tag in self.soup.find_all(self._is_input_with_onclick):
             for item in re.findall(self.pattern, tag.get('onclick')):
-                URL.append(self.filter(self.onclick_filter(item)))
+                if self.judge(self.onclick_filter(item)):
+                    URL.append(self.filter(self.onclick_filter(item)))
 
         # ajax请求
+
+        return URL
 
 
 
