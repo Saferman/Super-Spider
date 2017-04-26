@@ -8,9 +8,10 @@ import urllib
 import sqlite3
 import requests
 import threading
-from downloader import Browser
+from downloader import Crawler
 from DuplicateRemoval.DuplicateRemoval import Duplicate
 import hashlib
+from PyQt4.QtGui import QApplication
 
 def MD5(s):
     m = hashlib.md5() 
@@ -20,28 +21,21 @@ def MD5(s):
 class Spider(object):
 
     def __init__(self, url):
-        self.tasks = Queue.Queue()
         url = self._normalize(url)
-        self.tasks.put(url)
-        self.check = Queue.Queue()
+        self.tasks = [url]
+        self.check_urls = []
         self.ID = [0]
         self.conn = self._connectDB(url)
-        self.end_flag = 0
-        self.threads_count = 1
 
     def _normalize(self, url):   
+        #域名前的要正规，末尾要有/
         return url
 
-    def _check(self):
-        while self.end_flag < self.threads_count:
-            if not self.check.empty():
-                check_url = self.check.get()    
-                if Duplicate(self.conn, self.ID, check_url):
-                    pass
-                else:
-                    self.tasks.put(check_url)
-            else:
-                pass
+    def _isend(self):
+        if not self.tasks:
+            return True
+        else:
+            return False
 
     def _connectDB(self,url):
         filename = MD5(url)
@@ -58,28 +52,24 @@ class Spider(object):
         return conn
 
     def pagecrawl(self):
-        kong = 0
-        while kong <= 5:
-            if not self.tasks.empty():
-                url = self.tasks.get()
-                print "[+]pagecrawl:" + url
-                for u in Browser(url).get_result():
-                    self.check.put(u)
-            else:
-                kong += kong
-                time.sleep(kong)
-        self.end_flag += 1
+        app = QApplication(sys.argv)
+        while not self._isend():
+            for u in self.tasks:
+                print u
+            crawler = Crawler(app, self.check_urls)
+            crawler.start(self.tasks)
+            app.exec_()
+            self.tasks = []
+            for u in self.check_urls:
+                if not Duplicate(self.conn, self.ID, u):
+                    self.tasks.append(u)
+                else:
+                    pass
+            self.check_urls = []
+        print "[+]End"
 
     def execute(self):
-        threads_count = self.threads_count
-        threads = []
-        for i in xrange(threads_count):
-            t = threading.Thread(target=self.pagecrawl, args=())
-            threads.append(t)
-        for t in threads:
-            t.setDaemon(True)
-            t.start()
-        self._check()
+        self.pagecrawl()
         self.conn.close()
 
 if __name__ == '__main__':

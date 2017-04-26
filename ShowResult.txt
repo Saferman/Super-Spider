@@ -1,0 +1,21 @@
+[+]DB created successfully
+http://demo.aisec.cn/demo/aisec/
+content-type missing in HTTP POST, defaulting to application/x-www-form-urlencoded. Use QNetworkRequest::setHeader() to fix this problem.
+exequit
+http://demo.aisec.cn/demo/aisec/html_link.php?id=2
+http://demo.aisec.cn/demo/aisec/#
+http://demo.aisec.cn/demo/aisec/js_link.php?id=2&msg=abc
+http://demo.aisec.cn/demo/aisec/login.php
+http://demo.aisec.cn/demo/aisec/other/
+http://demo.aisec.cn/demo/aisec/click_link.php?id=2
+content-type missing in HTTP POST, defaulting to application/x-www-form-urlencoded. Use QNetworkRequest::setHeader() to fix this problem.
+exequit
+http://demo.aisec.cn/demo/aisec/?
+http://demo.aisec.cn/demo/aisec/index.php
+http://demo.aisec.cn/demo/aisec/?abc
+content-type missing in HTTP POST, defaulting to application/x-www-form-urlencoded. Use QNetworkRequest::setHeader() to fix this problem.
+content-type missing in HTTP POST, defaulting to application/x-www-form-urlencoded. Use QNetworkRequest::setHeader() to fix this problem.
+content-type missing in HTTP POST, defaulting to application/x-www-form-urlencoded. Use QNetworkRequest::setHeader() to fix this problem.
+exequit
+[+]End
+[Finished in 5.2s]

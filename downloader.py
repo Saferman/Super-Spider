@@ -8,11 +8,14 @@ from Analysis.DomAnalysis import DomAnalysis
 
 class Crawler(object):
 
-    def __init__(self, app):
+    def __init__(self, app, check_urls=[]):
         self.app = app
-        self.root_url = ''
-        self.result = []
+        self.page_url = ''
+        self.result = check_urls 
         self.browsers = dict()
+
+    def _path(self, url):
+        return url[0:url.rfind("/")]
 
     def _load_finished(self, browser_id, ok):
         #print ok, browser_id
@@ -21,7 +24,7 @@ class Crawler(object):
 
         frame = web_view.page().mainFrame()
         dom = unicode(frame.toHtml()).encode('utf-8','ignore')
-        self.result += parse(dom, self.root_url)
+        self.result += parse(dom, self.page_url)
 
         web_view.loadFinished.disconnect()
         web_view.stop()
@@ -29,12 +32,13 @@ class Crawler(object):
         if all([closed for bid, closed in self.browsers.values()]):
             #print 'all finished'
             #for u in self.result:
-            #    print u
+                #print u
+            #print "exequit"
             self.app.quit()
 
     def start(self, urls):
         for browser_id, url in enumerate(urls):
-            self.root_url = url
+            self.page_url = self._path(url)
             web_view = QWebView()
             web_view.settings().setAttribute(QWebSettings.AutoLoadImages,
                                              False)
@@ -42,6 +46,7 @@ class Crawler(object):
             web_view.loadFinished.connect(loaded)
             web_view.load(QUrl(url))
             self.browsers[browser_id] = (web_view, False)
+        return self.result
 
 def parse(dom, url):
     DomHandle = DomAnalysis(dom, url)
@@ -49,7 +54,7 @@ def parse(dom, url):
 
 
 if __name__ == '__main__':
-    url = ["http://demo.aisec.cn/demo/aisec/"]  
+    url = ["http://demo.aisec.cn/demo/aisec/"]
     app = QApplication(sys.argv)
     crawler = Crawler(app)
     crawler.start(url)

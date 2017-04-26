@@ -29,12 +29,12 @@ class DomAnalysis(FilterURL):
         #print self.ShowHTML()
         URL = []
         # 得到页面编码情况
-        if not self.soup.meta.get('content'):
+        try:
             if 'utf-8' in self.soup.meta.get('content'):
                 charset = 'utf-8'
             else:
                 charset = 'gbk'
-        else:
+        except:
             charset = 'utf-8'
 
         # 静态页面链接分析 和 javascript动态解析
@@ -44,7 +44,7 @@ class DomAnalysis(FilterURL):
                 URL.append(self.filter(tag.get('href')))
                 #print self.filter(tag.get('href'))
 
-        # 自动分析表单
+        """# 自动分析表单
         for tag in self.soup.find_all('form'):
             if not tag.get('action'):
                 action_url = ''
@@ -56,12 +56,13 @@ class DomAnalysis(FilterURL):
                 for tag2 in tag.find_all('input'):
                     if tag2.get('name') == None:
                         continue
-                    value = tag2.get('value').encode(charset,'ignore') 
+                    value = tag2.get('value')
                     if not value:
-                        value = 'admin' 
+                        value = 'admin'
+                    value = value.encode(charset,'ignore')
                     param.append(tag2.get('name')+'='+urllib.quote(value))
                 URL.append(action_url + "?" + '&'.join(param))
-        
+        """
         #  自动交互. 这里采用静态析的思路提取交互式生成的链接
         for tag in self.soup.find_all(self._is_input_with_onclick):
             for item in re.findall(self.pattern, tag.get('onclick')):
