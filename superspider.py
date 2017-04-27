@@ -28,7 +28,10 @@ class Spider(object):
         self.conn = self._connectDB(url)
 
     def _normalize(self, url):   
-        #域名前的要正规，末尾要有/
+        # 域名前的要正规，末尾要有/
+        url = url.rstrip('/') + '/'
+        if url.find(':')!=-1:
+            url = url[0:url.find(':')+1].lower() + '//' + url[url.find(':')+1:].lstrip('/')
         return url
 
     def _isend(self):
@@ -73,4 +76,5 @@ class Spider(object):
         self.conn.close()
 
 if __name__ == '__main__':
-    Spider("http://demo.aisec.cn/demo/aisec/").execute()
+    Spider_url = "http://demo.aisec.cn/demo/aisec/"
+    Spider(Spider_url).execute()

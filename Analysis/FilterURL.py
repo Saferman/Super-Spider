@@ -14,7 +14,7 @@ class FilterURL(object):
         if link.find('javascript:')==0:
             return False
         if link.find('http')!=-1 and link.find(self.url)==-1:
-            # 去掉不在同源策略范围内的链接
+            # 去掉不在同源策略范围链接
             return False
         return True
         
