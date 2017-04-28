@@ -11,8 +11,8 @@
 
 这款工具的架构采用的是腾讯安全应急响应中心一篇博文中给出的一个架构（博文链接：[打造功能强大的爬虫利器](https://security.tencent.com/index.php/blog/msg/34)。之所以选择这个架构，是因为这个架构合理，便于维护和拓展，具有权威性。虽然这篇文章对爬虫架构和每个部分的功能有所说明，但是说明不够详细和完善，有很多可以补充的空间，而且官方并没有没有给出代码细节。   
   
-因此我以这篇博文为基础添加许多自己的想法构建了这款SuperSpider工具。爬虫架构如下：  
-  
+因此我以这篇博文为基础添加许多自己的想法构建了这款SuperSpider工具。爬虫架构如下：
+![Image text](https://raw.githubusercontent.com/Saferman/Super-Spider/master/Images/architecture.png)  
   
 下面我来详细说明一下每个模块：  
 #### 1.分析页面，主要包括以下内容：
@@ -49,7 +49,8 @@ http://video.sina.com.cn/ent/s/h/d+-d+-d+/d+.shtml?a=d+&b=d+
 
 ### 爬虫的具体实现
 腾讯博文给出了一个很小的代码师范，但是这个代码一是对于不熟悉PyQt4的开发者来说很难封装成一个可调度页面抓取接口，而且容易报错。二是不符合我的开发习惯，所以完全采用了自己编写的类Crawler 如下：
-  
+![Image text](https://raw.githubusercontent.com/Saferman/Super-Spider/master/Images/Crawler.png)  
+
 除此之外，这款工具纯Python2.7.9构建，目前需要的第三方依赖如下：
  
 - PyQt4
